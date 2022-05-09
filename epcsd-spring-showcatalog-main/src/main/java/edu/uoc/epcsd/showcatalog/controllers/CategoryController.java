@@ -5,10 +5,7 @@ import edu.uoc.epcsd.showcatalog.repositories.CategoryRepository;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -28,5 +25,16 @@ public class CategoryController {
         return categoryRepository.findAll();
     }
 
-    // add the code for the missing system operations here
+    @PostMapping("/")
+    @ResponseStatus(HttpStatus.OK)
+    public long createCategory(String name, @RequestParam(required = false) String description) {
+        log.trace("createCategory");
+
+        Category category = new Category();
+        category.setName(name);
+        category.setDescription(description);
+
+        return categoryRepository.save(category).getId();
+    }
+
 }

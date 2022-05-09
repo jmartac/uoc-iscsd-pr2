@@ -7,7 +7,7 @@ import javax.persistence.*;
 import java.util.List;
 
 @Entity
-@ToString(exclude = "shows")
+@ToString
 @Getter
 @Setter
 @EqualsAndHashCode
@@ -23,7 +23,11 @@ public class Category {
     @Column(name = "name", nullable = false)
     private String name;
 
+    @Column(name = "description")
+    private String description;
+
     @JsonIgnore
     @ManyToMany(mappedBy = "categories")
+    @ToString.Exclude
     private List<Show> shows;
 }
