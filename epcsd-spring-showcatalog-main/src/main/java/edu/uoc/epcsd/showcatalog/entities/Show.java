@@ -29,8 +29,11 @@ public class Show {
     @Column(name = "image")
     private String image;
 
+    @Column(name = "price")
+    private double price;
+
     @Column(name = "duration")
-    private int duration; // duration in minutes
+    private double duration; // duration in minutes
 
     @Column(name = "capacity")
     private int capacity;
@@ -41,14 +44,13 @@ public class Show {
     @Column(name = "status")
     private LocalDate status;
 
-    @ManyToMany(cascade = CascadeType.MERGE)
-    @JoinTable(
-            name = "show_categories",
-            joinColumns = @JoinColumn(name = "id_show"),
-            inverseJoinColumns = @JoinColumn(name = "id_category")
-    )
-    @ToString.Exclude
-    private List<Category> categories;
+    /**
+     * Como ya he dicho, se aceptará indistintamente cualquiera de las dos implementaciones (el modelo de la solución
+     * corresponde a tu interpretación, donde la relación es 1 a N).
+     */
+    @ManyToOne(cascade = CascadeType.MERGE)
+    @JoinColumn(name = "category_id")
+    private Category category;
 
     //@JsonIgnore
     @OneToMany(mappedBy = "show")

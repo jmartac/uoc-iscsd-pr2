@@ -27,7 +27,7 @@ public class Category {
     private String description;
 
     @JsonIgnore
-    @ManyToMany(mappedBy = "categories")
+    @OneToMany(mappedBy = "category")
     @ToString.Exclude
     private List<Show> shows;
 }
