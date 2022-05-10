@@ -13,7 +13,7 @@ import java.util.Optional;
 
 @Log4j2
 @RestController
-@RequestMapping("/show")
+@RequestMapping("/shows")
 public class ShowController {
 
     @Autowired
@@ -30,11 +30,10 @@ public class ShowController {
         return showRepository.findAll();
     }
 
-    // add the code for the missing system operations here
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
     public Optional<Show> showDetails(@PathVariable long id) {
-        log.trace("getShow");
+        log.trace("showDetails");
 
         return showRepository.findById(id);
     }

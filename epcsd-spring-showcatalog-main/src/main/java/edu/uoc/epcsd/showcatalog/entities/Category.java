@@ -4,6 +4,9 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
 @Entity
@@ -16,10 +19,14 @@ import java.util.List;
 @AllArgsConstructor
 public class Category {
 
+    @JsonIgnore
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotEmpty
+    @NotBlank
+    @NotNull
     @Column(name = "name", nullable = false)
     private String name;
 

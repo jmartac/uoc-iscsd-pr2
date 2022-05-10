@@ -1,5 +1,6 @@
 package edu.uoc.epcsd.showcatalog.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 import org.hibernate.validator.constraints.URL;
 
@@ -17,6 +18,7 @@ import java.time.LocalDate;
 @AllArgsConstructor
 public class Performance {
 
+    @JsonIgnore
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -41,6 +43,7 @@ public class Performance {
     @Column(name = "state")
     private String state;
 
+    @JsonIgnore
     @ManyToOne(cascade = CascadeType.MERGE)
     @JoinColumn(name = "show_id")
     private Show show;

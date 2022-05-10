@@ -1,5 +1,6 @@
 package edu.uoc.epcsd.showcatalog.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import javax.persistence.*;
@@ -16,6 +17,7 @@ import java.util.List;
 @AllArgsConstructor
 public class Show {
 
+    @JsonIgnore
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -41,18 +43,20 @@ public class Show {
     @Column(name = "onSaleDate")
     private LocalDate onSaleDate;
 
+    @JsonIgnore
     @Column(name = "status")
-    private LocalDate status;
+    private String status;
 
     /**
      * Como ya he dicho, se aceptará indistintamente cualquiera de las dos implementaciones (el modelo de la solución
      * corresponde a tu interpretación, donde la relación es 1 a N).
      */
+    @JsonIgnore
     @ManyToOne(cascade = CascadeType.MERGE)
     @JoinColumn(name = "category_id")
     private Category category;
 
-    //@JsonIgnore
+    @JsonIgnore
     @OneToMany(mappedBy = "show")
     @ToString.Exclude
     private List<Performance> performances;
