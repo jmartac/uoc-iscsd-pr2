@@ -16,7 +16,7 @@ import java.io.Serializable;
 @Embeddable
 public class PerformancePK implements Serializable {
 
-    private String id_show;
+    private long id_show;
 
     @URL
     @Column(name = "streaming_URL")

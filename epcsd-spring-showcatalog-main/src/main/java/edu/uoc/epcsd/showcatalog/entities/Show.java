@@ -18,7 +18,6 @@ import java.util.List;
 @AllArgsConstructor
 public class Show {
 
-    @JsonIgnore
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -44,7 +43,6 @@ public class Show {
     @Column(name = "onSaleDate")
     private LocalDate onSaleDate;
 
-    @JsonIgnore
     @Column(name = "status")
     private String status;
 
@@ -63,7 +61,7 @@ public class Show {
     private List<Category> categories = new ArrayList<>();
 
     @JsonIgnore
-    @OneToMany(mappedBy = "show")
+    @OneToMany(mappedBy = "show", cascade = {CascadeType.MERGE, CascadeType.REMOVE})
     @OrderBy("id.id_show DESC, id.streamingURL")
     @ToString.Exclude
     private List<Performance> performances = new java.util.ArrayList<>();

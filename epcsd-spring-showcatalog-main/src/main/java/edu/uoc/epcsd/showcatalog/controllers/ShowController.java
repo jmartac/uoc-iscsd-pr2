@@ -75,7 +75,7 @@ public class ShowController {
     public List<Show> getShowsByName(@RequestParam String name) {
         log.trace("getShowByName");
 
-        return showRepository.findShowByName(name);
+        return showRepository.findByNameContaining(name);
     }
 
     @GetMapping("/category")
@@ -86,7 +86,7 @@ public class ShowController {
         return showRepository.findShowByCategoriesId(id);
     }
 
-    @PostMapping("/{showId}")
+    @PostMapping("/{showId}/performances")
     public ResponseEntity<PerformancePK> createPerformance(@PathVariable long showId, @RequestBody PerformanceDTO requestBody) {
         log.trace("createPerformance");
 
