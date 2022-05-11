@@ -42,28 +42,15 @@ public class CategoryController {
         return categoryRepository.save(category).getId();
     }
 
-    @PostMapping("/{categoryId}/show")
-    @ResponseStatus(HttpStatus.OK)
-    public long createShow(@PathVariable long categoryId, @RequestBody Show body) {
-        log.trace("createShow");
-
-        Category category = categoryRepository.findById(categoryId).orElse(null);
-        if (category == null) {
-            throw new BadRequestException(Response.status(Response.Status.BAD_REQUEST).build());
-        }
-
-        Show show = new Show();
-        show.setCategory(category);
-        show.setName(body.getName());
-        show.setDescription(body.getDescription());
-        show.setImage(body.getImage());
-        show.setPrice(body.getPrice());
-        show.setCapacity(body.getCapacity());
-        show.setDuration(body.getDuration());
-        show.setStatus("CREATED");
-
-        // TODO Notificar
-        return showRepository.save(show).getId();
-    }
+    /**
+     * No solo no se debe hacer cascade, es que en esta implementación
+     * no se debe permitir borrar una categoría que tenga actos asignados.
+     *
+     */
+    // @PostMapping("/{categoryId}")
+    // @ResponseStatus(HttpStatus.)
+    // public long deleteCategory(@PathVariable long categoryId) {
+    //     log.trace("deleteCategory");
+    // }
 
 }

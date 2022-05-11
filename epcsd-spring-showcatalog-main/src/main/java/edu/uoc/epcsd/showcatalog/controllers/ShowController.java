@@ -2,7 +2,6 @@ package edu.uoc.epcsd.showcatalog.controllers;
 
 import edu.uoc.epcsd.showcatalog.entities.Performance;
 import edu.uoc.epcsd.showcatalog.entities.Show;
-import edu.uoc.epcsd.showcatalog.repositories.PerformanceRepository;
 import edu.uoc.epcsd.showcatalog.repositories.ShowRepository;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +14,16 @@ import javax.ws.rs.core.Response;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * As the PR1 solution suggest in the definition of the operation
+ *  "createShow(categoryId, name, description, image, price, capacity, duration)",
+ * Show class should have one and only one categoryId.
+ *
+ * However, as the Show class given in the PR2 statement (and code base) does have multiple categories,
+ * I decided to implement the given ManyToMany relationship between Category and Show.
+ * Therefore, the createShow operation will not ask for a categoryId.
+ */
+
 @Log4j2
 @RestController
 @RequestMapping("/shows")
@@ -22,8 +31,6 @@ public class ShowController {
 
     @Autowired
     private ShowRepository showRepository;
-    @Autowired
-    private PerformanceRepository performanceRepository;
 
     @Autowired
     private KafkaTemplate<String, Show> kafkaTemplate;
@@ -38,16 +45,10 @@ public class ShowController {
 
     @PostMapping("/")
     @ResponseStatus(HttpStatus.OK)
-    public long createShow(@RequestParam long categoryId, @RequestBody Show body) {
+    public long createShow(@RequestBody Show body) {
         log.trace("createShow");
 
-//        Category category = categoryRepository.findById(categoryId).orElse(null);
-//        if (category == null) {
-//            throw new BadRequestException(Response.status(Response.Status.BAD_REQUEST).build());
-//        }
-
         Show show = new Show();
-//        show.setCategory(category);
         show.setName(body.getName());
         show.setDescription(body.getDescription());
         show.setImage(body.getImage());
@@ -57,28 +58,29 @@ public class ShowController {
         show.setStatus("CREATED");
 
         // TODO Notificar
+
         return showRepository.save(show).getId();
     }
 
-    @GetMapping("/search")
+    @GetMapping("/name")
     @ResponseStatus(HttpStatus.OK)
-    public List<Show> getShowsByName(@RequestParam String category) {
+    public List<Show> getShowsByName(@RequestParam String name) {
         log.trace("getShowByName");
 
-        return showRepository.findByName(category);
+        return showRepository.findShowByName(name);
     }
 
-    @GetMapping("/search")
+    @GetMapping("/category")
     @ResponseStatus(HttpStatus.OK)
-    public List<Show> getShowsByCategory(long categoryId) {
+    public List<Show> getShowsByCategory(@RequestParam long id) {
         log.trace("getShowsByCategory");
 
-        return showRepository.findByCategoryId(categoryId);
+        return showRepository.findShowByCategoriesId(id);
     }
 
     @PostMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public long createPerformance(@PathVariable long id, @RequestBody Performance body) {
+    public String createPerformance(@PathVariable long id, @RequestBody Performance body) {
         log.trace("createPerformance");
 
         Show show = showRepository.findById(id).orElse(null);
@@ -89,12 +91,11 @@ public class ShowController {
         Performance performance = new Performance();
         performance.setShow(show);
         performance.setDate(body.getDate());
-        performance.setPublic(body.isPublic());
-        performance.setCapacity(body.getCapacity());
-        performance.setPrice(body.getPrice());
         performance.setStatus("CREATED");
 
-        return performanceRepository.save(performance).getId();
+        show.getPerformances().add(performance);
+
+        return showRepository.save(show).getPerformances().get(0).getId().toString();
     }
 
 }

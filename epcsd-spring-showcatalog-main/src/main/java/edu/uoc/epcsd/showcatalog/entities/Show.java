@@ -5,6 +5,7 @@ import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -58,12 +59,14 @@ public class Show {
             joinColumns = @JoinColumn(name = "id_show"),
             inverseJoinColumns = @JoinColumn(name = "id_category")
     )
-    private List<Category> categories;
+    @ToString.Exclude
+    private List<Category> categories = new ArrayList<>();
 
     @JsonIgnore
     @OneToMany(mappedBy = "show")
+    @OrderBy("id.id_show DESC, id.streamingURL")
     @ToString.Exclude
-    private List<Performance> performances;
+    private List<Performance> performances = new java.util.ArrayList<>();
 
     /**
      * En referencia a la implementación del comando POST /shows/{showId}/performances/{performanceId}/cancel:

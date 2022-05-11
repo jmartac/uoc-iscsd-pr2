@@ -27,20 +27,20 @@ import java.time.LocalDate;
 @AllArgsConstructor
 public class Performance {
 
+    @EmbeddedId
+    private PerformancePK id;
+
     @JsonIgnore
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @ManyToOne(cascade = CascadeType.MERGE)
+    @JoinColumn(name = "id_show")
+    @MapsId("id_show")
+    private Show show;
 
     @Column(name = "date")
     private LocalDate date;
 
     @Column(name = "time")
     private Timestamp time;
-
-    @URL
-    @Column(name = "streamingURL")
-    private String streamingURL;
 
     @Column(name = "remainingSeats")
     private int remainingSeats; // duration in minutes
@@ -51,10 +51,5 @@ public class Performance {
      */
     @Column(name = "status")
     private String status;
-
-    @JsonIgnore
-    @ManyToOne(cascade = CascadeType.MERGE)
-    @JoinColumn(name = "show_id")
-    private Show show;
 
 }

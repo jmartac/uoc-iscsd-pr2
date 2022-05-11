@@ -7,6 +7,7 @@ import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -35,5 +36,6 @@ public class Category {
 
     @JsonIgnore
     @ManyToMany(mappedBy = "categories")
-    private List<Show> shows;
+    @ToString.Exclude
+    private List<Show> shows = new ArrayList<>();
 }
