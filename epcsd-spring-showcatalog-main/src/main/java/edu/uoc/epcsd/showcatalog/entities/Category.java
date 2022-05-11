@@ -30,6 +30,7 @@ public class Category {
     @Column(name = "description")
     private String description;
 
+    @JsonIgnore
     @ManyToMany(mappedBy = "categories")
     @ToString.Exclude
     private List<Show> shows = new ArrayList<>();
