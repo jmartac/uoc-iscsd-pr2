@@ -30,11 +30,6 @@ import java.util.List;
 @RequestMapping("/shows")
 public class ShowController {
 
-    /**
-     * TODO fix Bad Request exceptions
-     * TODO use DTO instead of Show classes
-     */
-
     @Autowired
     private ShowRepository showRepository;
 
