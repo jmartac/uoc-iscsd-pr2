@@ -8,6 +8,15 @@ import javax.persistence.*;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 
+/**
+ * As the PR1 solution suggest in the definition of the operation
+ *  "createPerformance(showId, date, isPublic, capacity, price)",
+ * Performance class should have the following attributes: isPublic, capacity, price.
+ *
+ * So, I decided to add these extra attributes to the Performance class, even though they are not specified
+ * in the definition of the Performance class given in the PR2 statement, just to match the PR1 solution.
+ */
+
 @Entity
 @ToString
 @Getter
@@ -29,6 +38,15 @@ public class Performance {
     @Column(name = "time")
     private Timestamp time;
 
+    @Column(name = "isPublic")
+    private boolean isPublic;
+
+    @Column(name = "price")
+    private double price;
+
+    @Column(name = "capacity")
+    private int capacity;
+
     @URL
     @Column(name = "streamingURL")
     private String streamingURL;
@@ -40,8 +58,8 @@ public class Performance {
      * En referencia al caso de estudio: las Actuaciones no tendrán estado y por lo tanto no es necesario
      * implementar ninguna operación para cancelar Actuaciones individuales.
      */
-    @Column(name = "state")
-    private String state;
+    @Column(name = "status")
+    private String status;
 
     @JsonIgnore
     @ManyToOne(cascade = CascadeType.MERGE)

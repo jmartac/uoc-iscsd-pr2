@@ -1,16 +1,12 @@
 package edu.uoc.epcsd.showcatalog.controllers;
 
 import edu.uoc.epcsd.showcatalog.entities.Category;
-import edu.uoc.epcsd.showcatalog.entities.Show;
 import edu.uoc.epcsd.showcatalog.repositories.CategoryRepository;
-import edu.uoc.epcsd.showcatalog.repositories.ShowRepository;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
-import javax.ws.rs.BadRequestException;
-import javax.ws.rs.core.Response;
 import java.util.List;
 
 @Log4j2
@@ -25,8 +21,6 @@ public class CategoryController {
 
     @Autowired
     private CategoryRepository categoryRepository;
-    @Autowired
-    private ShowRepository showRepository;
 
     @GetMapping("/")
     @ResponseStatus(HttpStatus.OK)
