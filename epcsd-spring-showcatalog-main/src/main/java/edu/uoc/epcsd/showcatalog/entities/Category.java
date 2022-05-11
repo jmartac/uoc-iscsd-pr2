@@ -34,7 +34,6 @@ public class Category {
     private String description;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "category")
-    @ToString.Exclude
+    @ManyToMany(mappedBy = "categories")
     private List<Show> shows;
 }

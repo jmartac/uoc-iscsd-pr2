@@ -52,9 +52,13 @@ public class Show {
      * corresponde a tu interpretación, donde la relación es 1 a N).
      */
     @JsonIgnore
-    @ManyToOne(cascade = CascadeType.MERGE)
-    @JoinColumn(name = "category_id")
-    private Category category;
+    @ManyToMany(cascade = CascadeType.MERGE)
+    @JoinTable(
+            name = "show_categories",
+            joinColumns = @JoinColumn(name = "id_show"),
+            inverseJoinColumns = @JoinColumn(name = "id_category")
+    )
+    private List<Category> categories;
 
     @JsonIgnore
     @OneToMany(mappedBy = "show")
