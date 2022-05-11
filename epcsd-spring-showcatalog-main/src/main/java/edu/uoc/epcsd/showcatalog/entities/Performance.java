@@ -13,8 +13,8 @@ import java.time.LocalDate;
  *  "createPerformance(showId, date, isPublic, capacity, price)",
  * Performance class should have the following attributes: isPublic, capacity, price.
  *
- * So, I decided to add these extra attributes to the Performance class, even though they are not specified
- * in the definition of the Performance class given in the PR2 statement, just to match the PR1 solution.
+ * However, I decided to exclude them due to its lack of use and to match the definition of
+ * the Performance class given in the PR2 statement.
  */
 
 @Entity
@@ -37,15 +37,6 @@ public class Performance {
 
     @Column(name = "time")
     private Timestamp time;
-
-    @Column(name = "isPublic")
-    private boolean isPublic;
-
-    @Column(name = "price")
-    private double price;
-
-    @Column(name = "capacity")
-    private int capacity;
 
     @URL
     @Column(name = "streamingURL")
