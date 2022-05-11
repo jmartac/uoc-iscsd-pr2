@@ -7,6 +7,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import javax.ws.rs.BadRequestException;
+import javax.ws.rs.NotFoundException;
+import javax.ws.rs.core.Response;
 import java.util.List;
 
 @Log4j2
@@ -43,14 +46,26 @@ public class CategoryController {
     }
 
     /**
-     * No solo no se debe hacer cascade, es que en esta implementación
-     * no se debe permitir borrar una categoría que tenga actos asignados.
-     *
+     * "No solo no se debe hacer cascade, es que en esta implementación
+     * no se debe permitir borrar una categoría que tenga actos asignados."
      */
-    // @PostMapping("/{categoryId}")
-    // @ResponseStatus(HttpStatus.)
-    // public long deleteCategory(@PathVariable long categoryId) {
-    //     log.trace("deleteCategory");
-    // }
+    @PostMapping("/{categoryId}/delete")
+    @ResponseStatus(HttpStatus.OK)
+    public void deleteCategory(@PathVariable long categoryId) {
+        log.trace("deleteCategory");
+
+        Category category = categoryRepository.findById(categoryId).orElse(null);
+        if (category == null) {
+            log.warn("Category not found");
+            throw new NotFoundException(Response.status(Response.Status.NOT_FOUND).build());
+        }
+
+        if (category.getShows().isEmpty()) {
+            categoryRepository.delete(category);
+            log.info("Category {} deleted", categoryId);
+        } else {
+            log.warn("Category {} cannot be deleted because it has shows assigned", categoryId);
+        }
+    }
 
 }
