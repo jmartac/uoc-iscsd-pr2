@@ -43,7 +43,7 @@ public class Performance {
     private Timestamp time;
 
     @Column(name = "remainingSeats")
-    private int remainingSeats; // duration in minutes
+    private int remainingSeats;
 
     /**
      * En referencia al caso de estudio: las Actuaciones no tendrán estado y por lo tanto no es necesario

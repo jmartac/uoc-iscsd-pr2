@@ -1,18 +1,19 @@
 package edu.uoc.epcsd.showcatalog.controllers;
 
+import edu.uoc.epcsd.showcatalog.DTOs.PerformanceDTO;
+import edu.uoc.epcsd.showcatalog.DTOs.ShowDTO;
 import edu.uoc.epcsd.showcatalog.entities.Performance;
+import edu.uoc.epcsd.showcatalog.entities.PerformancePK;
 import edu.uoc.epcsd.showcatalog.entities.Show;
 import edu.uoc.epcsd.showcatalog.repositories.ShowRepository;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.web.bind.annotation.*;
 
-import javax.ws.rs.BadRequestException;
-import javax.ws.rs.core.Response;
 import java.util.List;
-import java.util.Optional;
 
 /**
  * As the PR1 solution suggest in the definition of the operation
@@ -29,37 +30,49 @@ import java.util.Optional;
 @RequestMapping("/shows")
 public class ShowController {
 
+    /**
+     * TODO fix Bad Request exceptions
+     * TODO use DTO instead of Show classes
+     */
+
     @Autowired
     private ShowRepository showRepository;
 
     @Autowired
     private KafkaTemplate<String, Show> kafkaTemplate;
 
-    @GetMapping("/{id}")
-    @ResponseStatus(HttpStatus.OK)
-    public Optional<Show> showDetails(@PathVariable long id) {
-        log.trace("showDetails");
-
-        return showRepository.findById(id);
-    }
-
     @PostMapping("/")
-    @ResponseStatus(HttpStatus.OK)
-    public long createShow(@RequestBody Show body) {
+    public ResponseEntity<Long> createShow(@RequestBody ShowDTO requestBody) {
         log.trace("createShow");
 
         Show show = new Show();
-        show.setName(body.getName());
-        show.setDescription(body.getDescription());
-        show.setImage(body.getImage());
-        show.setPrice(body.getPrice());
-        show.setCapacity(body.getCapacity());
-        show.setDuration(body.getDuration());
+        show.setName(requestBody.getName());
+        show.setDescription(requestBody.getDescription());
+        show.setImage(requestBody.getImage());
+        show.setPrice(requestBody.getPrice());
+        show.setCapacity(requestBody.getCapacity());
+        show.setDuration(requestBody.getDuration());
         show.setStatus("CREATED");
 
-        // TODO Notificar
+        Show saved = showRepository.save(show);
+        log.info("Show {} created", saved.getId());
 
-        return showRepository.save(show).getId();
+        // TODO Notify Kafka
+
+        return new ResponseEntity<>(saved.getId(), HttpStatus.OK);
+    }
+
+    @GetMapping("/{showId}")
+    public ResponseEntity<Show> showDetails(@PathVariable long showId) {
+        log.trace("showDetails");
+
+        Show show = showRepository.findById(showId).orElse(null);
+        if (show == null) {
+            log.warn("Show not found");
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        return new ResponseEntity<>(show, HttpStatus.OK);
     }
 
     @GetMapping("/name")
@@ -78,24 +91,27 @@ public class ShowController {
         return showRepository.findShowByCategoriesId(id);
     }
 
-    @PostMapping("/{id}")
-    @ResponseStatus(HttpStatus.OK)
-    public String createPerformance(@PathVariable long id, @RequestBody Performance body) {
+    @PostMapping("/{showId}")
+    public ResponseEntity<PerformancePK> createPerformance(@PathVariable long showId, @RequestBody PerformanceDTO requestBody) {
         log.trace("createPerformance");
 
-        Show show = showRepository.findById(id).orElse(null);
+        Show show = showRepository.findById(showId).orElse(null);
         if (show == null) {
-            throw new BadRequestException(Response.status(Response.Status.BAD_REQUEST).build());
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
         Performance performance = new Performance();
         performance.setShow(show);
-        performance.setDate(body.getDate());
+        performance.setDate(requestBody.getDate());
+        performance.setRemainingSeats(requestBody.getRemainingSeats());
         performance.setStatus("CREATED");
 
-        show.getPerformances().add(performance);
+        show.addPerformance(performance);
 
-        return showRepository.save(show).getPerformances().get(0).getId().toString();
+        Performance saved = showRepository.save(show).mostRecentPerformance();
+        log.info("Performance {} created for Show {}", saved.getId(), show.getId());
+
+        return new ResponseEntity<>(saved.getId(), HttpStatus.OK);
     }
 
 }

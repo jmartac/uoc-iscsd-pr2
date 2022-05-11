@@ -68,6 +68,14 @@ public class Show {
     @ToString.Exclude
     private List<Performance> performances = new java.util.ArrayList<>();
 
+    public void addPerformance(Performance performance) {
+        performances.add(performance);
+    }
+
+    public Performance mostRecentPerformance() {
+        return performances.get(0);
+    }
+
     /**
      * En referencia a la implementación del comando POST /shows/{showId}/performances/{performanceId}/cancel:
      * no se debe implementar esta operación
