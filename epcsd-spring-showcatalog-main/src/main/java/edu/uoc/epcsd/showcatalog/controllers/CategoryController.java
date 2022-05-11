@@ -48,7 +48,7 @@ public class CategoryController {
         category.setDescription(requestBody.getDescription());
 
         Category saved = categoryRepository.save(category);
-        log.info("Category {} created", saved.getName());
+        log.info("Category {} created", saved.getId());
 
         return new ResponseEntity<>(saved.getId(), HttpStatus.OK);
     }
