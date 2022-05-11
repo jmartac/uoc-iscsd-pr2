@@ -1,22 +1,20 @@
 package edu.uoc.epcsd.showcatalog.DTOs;
 
-import edu.uoc.epcsd.showcatalog.entities.PerformancePK;
-import edu.uoc.epcsd.showcatalog.entities.Show;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.sql.Timestamp;
 import java.time.LocalDate;
 
 @Getter
 @Setter
 public class PerformanceDTO {
 
-    private PerformancePK id;
-
-    private Show show;
+    private String streamingURL;
 
     private LocalDate date;
 
-    private int remainingSeats;
+    private Timestamp time;
 
+    private int remainingSeats;
 }

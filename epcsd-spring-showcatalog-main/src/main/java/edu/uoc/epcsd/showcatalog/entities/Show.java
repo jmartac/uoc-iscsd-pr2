@@ -62,16 +62,16 @@ public class Show {
 
     @JsonIgnore
     @OneToMany(mappedBy = "show", cascade = {CascadeType.MERGE, CascadeType.REMOVE})
-    @OrderBy("id.id_show DESC, id.streamingURL")
     @ToString.Exclude
-    private List<Performance> performances = new java.util.ArrayList<>();
+    private List<Performance> performances = new ArrayList<>();
 
     public void addPerformance(Performance performance) {
         performances.add(performance);
     }
 
-    public Performance mostRecentPerformance() {
-        return performances.get(0);
+    public Performance findPerformance(Performance performance) {
+        int i = performances.indexOf(performance);
+        return i == -1 ? null : performances.get(i);
     }
 
     /**

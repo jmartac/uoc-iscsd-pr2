@@ -1,8 +1,6 @@
 package edu.uoc.epcsd.showcatalog.entities;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
-import org.hibernate.validator.constraints.URL;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
@@ -25,23 +23,27 @@ import java.time.LocalDate;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@IdClass(PerformancePK.class)
 public class Performance {
 
-    @EmbeddedId
-    private PerformancePK id;
-
-    @JsonIgnore
+    @Id
     @ManyToOne(cascade = CascadeType.MERGE)
     @JoinColumn(name = "id_show")
-    @MapsId("id_show")
     private Show show;
 
+    @Id
     @Column(name = "date")
     private LocalDate date;
 
+    @Id
+    @Column(name = "streaming_URL")
+    private String streamingURL;
+
+    @EqualsAndHashCode.Exclude
     @Column(name = "time")
     private Timestamp time;
 
+    @EqualsAndHashCode.Exclude
     @Column(name = "remainingSeats")
     private int remainingSeats;
 
@@ -49,7 +51,11 @@ public class Performance {
      * En referencia al caso de estudio: las Actuaciones no tendrán estado y por lo tanto no es necesario
      * implementar ninguna operación para cancelar Actuaciones individuales.
      */
+    @EqualsAndHashCode.Exclude
     @Column(name = "status")
     private String status;
 
+    public String idToString() {
+        return show.getId() + "-" + date.toString() + "-" + streamingURL;
+    }
 }

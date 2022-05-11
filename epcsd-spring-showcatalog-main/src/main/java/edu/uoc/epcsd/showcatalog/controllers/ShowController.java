@@ -87,26 +87,35 @@ public class ShowController {
     }
 
     @PostMapping("/{showId}/performances")
-    public ResponseEntity<PerformancePK> createPerformance(@PathVariable long showId, @RequestBody PerformanceDTO requestBody) {
+    public ResponseEntity<String> createPerformance(@PathVariable long showId, @RequestBody PerformanceDTO requestBody) {
         log.trace("createPerformance");
+
+        if (requestBody.getStreamingURL() == null || requestBody.getStreamingURL().isEmpty()) {
+            log.warn("Streaming URL is required");
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
 
         Show show = showRepository.findById(showId).orElse(null);
         if (show == null) {
+            log.warn("Show not found");
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
         Performance performance = new Performance();
         performance.setShow(show);
+        performance.setStreamingURL(requestBody.getStreamingURL());
         performance.setDate(requestBody.getDate());
+        performance.setTime(requestBody.getTime());
         performance.setRemainingSeats(requestBody.getRemainingSeats());
         performance.setStatus("CREATED");
 
         show.addPerformance(performance);
 
-        Performance saved = showRepository.save(show).mostRecentPerformance();
-        log.info("Performance {} created for Show {}", saved.getId(), show.getId());
+        Show showSaved = showRepository.save(show);
+        Performance performanceSaved = showSaved.findPerformance(performance);
 
-        return new ResponseEntity<>(saved.getId(), HttpStatus.OK);
+        log.info("Performance {} created for Show {}", performanceSaved.idToString(), showSaved.getId());
+        return new ResponseEntity<>(performanceSaved.idToString(), HttpStatus.OK);
     }
 
 }
