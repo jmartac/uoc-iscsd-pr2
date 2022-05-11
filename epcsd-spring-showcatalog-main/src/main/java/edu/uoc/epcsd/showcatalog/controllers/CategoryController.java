@@ -1,10 +1,12 @@
 package edu.uoc.epcsd.showcatalog.controllers;
 
+import edu.uoc.epcsd.showcatalog.DTOs.CategoryDTO;
 import edu.uoc.epcsd.showcatalog.entities.Category;
 import edu.uoc.epcsd.showcatalog.repositories.CategoryRepository;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.ws.rs.BadRequestException;
@@ -18,8 +20,7 @@ import java.util.List;
 public class CategoryController {
 
     /**
-     * TODO: fix the 500 error on bad requests
-     * TODO: use DTO instead of Category, Show classes
+     * TODO: implement addShowToCategory
      */
 
     @Autowired
@@ -34,15 +35,22 @@ public class CategoryController {
     }
 
     @PostMapping("/")
-    @ResponseStatus(HttpStatus.OK)
-    public long createCategory(@RequestBody Category body) {
+    public ResponseEntity<Long> createCategory(@RequestBody CategoryDTO requestBody) {
         log.trace("createCategory");
 
-        Category category = new Category();
-        category.setName(body.getName());
-        category.setDescription(body.getDescription());
+        if (requestBody.getName() == null || requestBody.getName().isEmpty()) {
+            log.warn("Category name is required");
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
 
-        return categoryRepository.save(category).getId();
+        Category category = new Category();
+        category.setName(requestBody.getName());
+        category.setDescription(requestBody.getDescription());
+
+        Category saved = categoryRepository.save(category);
+        log.info("Category {} created", saved.getName());
+
+        return new ResponseEntity<>(saved.getId(), HttpStatus.OK);
     }
 
     /**
@@ -50,22 +58,23 @@ public class CategoryController {
      * no se debe permitir borrar una categoría que tenga actos asignados."
      */
     @PostMapping("/{categoryId}/delete")
-    @ResponseStatus(HttpStatus.OK)
-    public void deleteCategory(@PathVariable long categoryId) {
+    public ResponseEntity<CategoryDTO> deleteCategory(@PathVariable long categoryId) {
         log.trace("deleteCategory");
 
         Category category = categoryRepository.findById(categoryId).orElse(null);
         if (category == null) {
             log.warn("Category not found");
-            throw new NotFoundException(Response.status(Response.Status.NOT_FOUND).build());
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
         if (category.getShows().isEmpty()) {
             categoryRepository.delete(category);
             log.info("Category {} deleted", categoryId);
-        } else {
-            log.warn("Category {} cannot be deleted because it has shows assigned", categoryId);
+            return new ResponseEntity<>(HttpStatus.OK);
         }
+
+        log.warn("Category {} cannot be deleted because it has shows assigned", categoryId);
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
 }
