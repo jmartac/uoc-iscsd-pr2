@@ -116,4 +116,21 @@ public class CatalogService {
         log.info("Performance {} created for Show {}", performanceSaved.idToString(), showSaved.getId());
         return new ResponseEntity<>(performanceSaved.idToString(), HttpStatus.OK);
     }
+
+    public ResponseEntity<Show> addShowCategory(long showId, long categoryId) {
+        Show show = showRepository.findById(showId).orElse(null);
+        if (show == null) {
+            log.warn("Show not found");
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        Category category = categoryRepository.findById(categoryId).orElse(null);
+        if (category == null) {
+            log.warn("Category not found");
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        show.addCategory(category);
+        return new ResponseEntity<>(showRepository.save(show), HttpStatus.OK);
+    }
 }
