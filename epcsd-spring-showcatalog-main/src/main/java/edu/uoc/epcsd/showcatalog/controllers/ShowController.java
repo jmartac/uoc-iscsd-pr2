@@ -4,7 +4,7 @@ import edu.uoc.epcsd.showcatalog.dtos.PerformanceDTO;
 import edu.uoc.epcsd.showcatalog.dtos.ShowDTO;
 import edu.uoc.epcsd.showcatalog.entities.Performance;
 import edu.uoc.epcsd.showcatalog.entities.Show;
-import edu.uoc.epcsd.showcatalog.repositories.ShowRepository;
+import edu.uoc.epcsd.showcatalog.service.CatalogService;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -31,29 +31,16 @@ import java.util.Optional;
 public class ShowController {
 
     @Autowired
-    private ShowRepository showRepository;
+    private CatalogService catalogService;
 
     @Autowired
     private KafkaTemplate<String, Show> kafkaTemplate;
 
-    /**
-     * This operation only accepts one of two request parameters:
-     * @param name
-     * @param categoryId
-     * @return Bad Request if both parameters, or neither, are provided
-     */
     @GetMapping()
     public ResponseEntity<List<Show>> findShowsByNameOrCategory(@RequestParam(required = false) String name, @RequestParam(required = false) Optional<Long> categoryId) {
         log.trace("findShowsByNameOrCategory");
 
-        if ((name != null && !name.isBlank() && categoryId.isPresent())
-                        || ((name == null || name.isBlank()) && categoryId.isEmpty())
-        ) return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-
-        if (categoryId.isPresent()) {
-            return new ResponseEntity<>(showRepository.findShowByCategoriesId(categoryId.get()), HttpStatus.OK);
-        }
-        return new ResponseEntity<>(showRepository.findByNameContaining(name), HttpStatus.OK);
+        return catalogService.findShowsByNameOrCategory(name, categoryId);
     }
 
     @PostMapping()
@@ -69,38 +56,23 @@ public class ShowController {
         show.setDuration(requestBody.getDuration());
         show.setStatus("CREATED");
 
-        Show saved = showRepository.save(show);
-        log.info("Show {} created", saved.getId());
+        // TODO Notify Kafka?
 
-        // TODO Notify Kafka
-
-        return new ResponseEntity<>(saved.getId(), HttpStatus.OK);
+        return catalogService.createShow(show);
     }
 
     @GetMapping("/{showId}")
     public ResponseEntity<Show> getShowDetails(@PathVariable long showId) {
         log.trace("getShowDetails");
 
-        Show show = showRepository.findById(showId).orElse(null);
-        if (show == null) {
-            log.warn("Show not found");
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-
-        return new ResponseEntity<>(show, HttpStatus.OK);
+        return catalogService.getShowDetails(showId);
     }
 
     @GetMapping("/{showId}/performances")
     public ResponseEntity<List<Performance>> findShowPerformances(@PathVariable long showId) {
         log.trace("findShowPerformances");
 
-        Show show = showRepository.findById(showId).orElse(null);
-        if (show == null) {
-            log.warn("Show not found");
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-
-        return new ResponseEntity<>(show.getPerformances(), HttpStatus.OK);
+        return catalogService.findShowPerformances(showId);
     }
 
     @PostMapping("/{showId}/performances")
@@ -112,27 +84,14 @@ public class ShowController {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
-        Show show = showRepository.findById(showId).orElse(null);
-        if (show == null) {
-            log.warn("Show not found");
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-
         Performance performance = new Performance();
-        performance.setShow(show);
         performance.setStreamingURL(requestBody.getStreamingURL());
         performance.setDate(requestBody.getDate());
         performance.setTime(requestBody.getTime());
         performance.setRemainingSeats(requestBody.getRemainingSeats());
         performance.setStatus("CREATED");
 
-        show.addPerformance(performance);
-
-        Show showSaved = showRepository.save(show);
-        Performance performanceSaved = showSaved.findPerformance(performance);
-
-        log.info("Performance {} created for Show {}", performanceSaved.idToString(), showSaved.getId());
-        return new ResponseEntity<>(performanceSaved.idToString(), HttpStatus.OK);
+        return catalogService.createPerformance(showId, performance);
     }
 
 }
