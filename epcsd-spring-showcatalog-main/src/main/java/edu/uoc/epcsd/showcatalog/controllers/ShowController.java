@@ -57,8 +57,8 @@ public class ShowController {
     }
 
     @GetMapping("/{showId}")
-    public ResponseEntity<Show> showDetails(@PathVariable long showId) {
-        log.trace("showDetails");
+    public ResponseEntity<Show> getShowDetails(@PathVariable long showId) {
+        log.trace("getShowDetails");
 
         Show show = showRepository.findById(showId).orElse(null);
         if (show == null) {
@@ -69,20 +69,20 @@ public class ShowController {
         return new ResponseEntity<>(show, HttpStatus.OK);
     }
 
-    @GetMapping("/name")
+    @GetMapping("/")
     @ResponseStatus(HttpStatus.OK)
-    public List<Show> getShowsByName(@RequestParam String name) {
+    public List<Show> findShowsByName(@RequestParam String name) {
         log.trace("getShowByName");
 
         return showRepository.findByNameContaining(name);
     }
 
-    @GetMapping("/category")
+    @GetMapping("/")
     @ResponseStatus(HttpStatus.OK)
-    public List<Show> getShowsByCategory(@RequestParam long id) {
-        log.trace("getShowsByCategory");
+    public List<Show> findShowsByCategory(@RequestParam long categoryId) {
+        log.trace("findShowsByCategory");
 
-        return showRepository.findShowByCategoriesId(id);
+        return showRepository.findShowByCategoriesId(categoryId);
     }
 
     @PostMapping("/{showId}/performances")

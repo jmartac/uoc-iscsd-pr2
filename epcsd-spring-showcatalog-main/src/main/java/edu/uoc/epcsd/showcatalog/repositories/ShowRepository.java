@@ -7,5 +7,5 @@ import java.util.List;
 
 public interface ShowRepository extends JpaRepository<Show, Long> {
     List<Show> findByNameContaining(String name);
-    List<Show> findShowByCategoriesId(Long categories_id);
+    List<Show> findShowByCategoriesId(Long categoryId);
 }
