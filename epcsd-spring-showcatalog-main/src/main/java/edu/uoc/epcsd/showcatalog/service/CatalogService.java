@@ -89,6 +89,18 @@ public class CatalogService {
         return new ResponseEntity<>(show, HttpStatus.OK);
     }
 
+    public ResponseEntity<Object> deleteShow(long showId) {
+        if (showRepository.existsById(showId)) {
+            showRepository.deleteById(showId);
+
+            log.info("Show {} deleted, and its performances", showId);
+            return new ResponseEntity<>(HttpStatus.OK);
+        }
+
+        log.warn("Show not found");
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
+
     public ResponseEntity<List<Performance>> findShowPerformances(long showId) {
         Show show = showRepository.findById(showId).orElse(null);
         if (show == null) {

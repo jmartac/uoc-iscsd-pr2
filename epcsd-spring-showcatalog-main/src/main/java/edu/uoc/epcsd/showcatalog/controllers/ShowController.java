@@ -23,6 +23,10 @@ import java.util.Optional;
  * However, as the Show class given in the PR2 statement (and code base) does have multiple categories,
  * I decided to implement the given ManyToMany relationship between Category and Show.
  * Therefore, the createShow operation will not ask for a categoryId.
+ *
+ * I understand that Performances do not need to be cancelled/deleted:
+ * Foro: "En referencia a la implementación del comando POST /shows/{showId}/performances/{performanceId}/cancel
+ * no se debe implementar esta operación"
  */
 
 @Log4j2
@@ -66,6 +70,14 @@ public class ShowController {
         log.trace("getShowDetails");
 
         return catalogService.getShowDetails(showId);
+    }
+
+    // I decided to delete shows, instead of cancel them (it was said in the forum that we could choose).
+    @PostMapping("/{showId}/delete")
+    public ResponseEntity<Object> deleteShow(@PathVariable long showId) {
+        log.trace("deleteShow");
+
+        return catalogService.deleteShow(showId);
     }
 
     @GetMapping("/{showId}/performances")
