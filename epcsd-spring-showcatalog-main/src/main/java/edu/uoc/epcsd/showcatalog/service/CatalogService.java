@@ -37,22 +37,20 @@ public class CatalogService {
 
     public ResponseEntity<Object> deleteCategory(long categoryId) {
 
-        // TODO: It MUST be possible to delete a category, even if it has shows
-
         Category category = categoryRepository.findById(categoryId).orElse(null);
         if (category == null) {
             log.warn("Category not found");
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
-        if (category.getShows().isEmpty()) {
-            categoryRepository.delete(category);
-            log.info("Category {} deleted", categoryId);
-            return new ResponseEntity<>(HttpStatus.OK);
+        if (!category.getShows().isEmpty()) {
+            category.getShows().forEach(show -> show.getCategories().remove(category));
+            categoryRepository.save(category);
         }
 
-        log.warn("Category {} cannot be deleted because it has shows assigned", categoryId);
-        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        categoryRepository.deleteById(categoryId);
+        log.info("Category {} deleted", categoryId);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     /**
