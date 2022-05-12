@@ -55,7 +55,7 @@ public class CategoryController {
      * no se debe permitir borrar una categoría que tenga actos asignados."
      */
     @PostMapping("/{categoryId}/delete")
-    public ResponseEntity<CategoryDTO> deleteCategory(@PathVariable long categoryId) {
+    public ResponseEntity<Object> deleteCategory(@PathVariable long categoryId) {
         log.trace("deleteCategory");
 
         Category category = categoryRepository.findById(categoryId).orElse(null);

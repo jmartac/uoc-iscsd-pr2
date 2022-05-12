@@ -73,4 +73,8 @@ public class Show {
         return i == -1 ? null : performances.get(i);
     }
 
+    public void addCategory(Category category) {
+        categories.add(category);
+    }
+
 }
