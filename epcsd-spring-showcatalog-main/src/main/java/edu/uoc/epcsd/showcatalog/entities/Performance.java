@@ -1,5 +1,6 @@
 package edu.uoc.epcsd.showcatalog.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import javax.persistence.*;
@@ -26,6 +27,7 @@ import java.time.LocalDate;
 @IdClass(PerformancePK.class)
 public class Performance {
 
+    @JsonIgnore
     @Id
     @ManyToOne(cascade = CascadeType.MERGE)
     @JoinColumn(name = "id_show")

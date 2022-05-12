@@ -90,6 +90,19 @@ public class ShowController {
         return new ResponseEntity<>(show, HttpStatus.OK);
     }
 
+    @GetMapping("/{showId}/performances")
+    public ResponseEntity<List<Performance>> findShowPerformances(@PathVariable long showId) {
+        log.trace("findShowPerformances");
+
+        Show show = showRepository.findById(showId).orElse(null);
+        if (show == null) {
+            log.warn("Show not found");
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        return new ResponseEntity<>(show.getPerformances(), HttpStatus.OK);
+    }
+
     @PostMapping("/{showId}/performances")
     public ResponseEntity<String> createPerformance(@PathVariable long showId, @RequestBody PerformanceDTO requestBody) {
         log.trace("createPerformance");
