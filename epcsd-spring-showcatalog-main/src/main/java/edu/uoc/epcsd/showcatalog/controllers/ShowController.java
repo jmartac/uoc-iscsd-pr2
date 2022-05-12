@@ -1,9 +1,8 @@
 package edu.uoc.epcsd.showcatalog.controllers;
 
-import edu.uoc.epcsd.showcatalog.DTOs.PerformanceDTO;
-import edu.uoc.epcsd.showcatalog.DTOs.ShowDTO;
+import edu.uoc.epcsd.showcatalog.dtos.PerformanceDTO;
+import edu.uoc.epcsd.showcatalog.dtos.ShowDTO;
 import edu.uoc.epcsd.showcatalog.entities.Performance;
-import edu.uoc.epcsd.showcatalog.entities.PerformancePK;
 import edu.uoc.epcsd.showcatalog.entities.Show;
 import edu.uoc.epcsd.showcatalog.repositories.ShowRepository;
 import lombok.extern.log4j.Log4j2;

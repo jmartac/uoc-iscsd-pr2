@@ -1,4 +1,4 @@
-package edu.uoc.epcsd.showcatalog.DTOs;
+package edu.uoc.epcsd.showcatalog.dtos;
 
 import lombok.Getter;
 import lombok.Setter;

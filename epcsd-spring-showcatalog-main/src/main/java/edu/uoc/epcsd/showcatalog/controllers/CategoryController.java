@@ -1,6 +1,6 @@
 package edu.uoc.epcsd.showcatalog.controllers;
 
-import edu.uoc.epcsd.showcatalog.DTOs.CategoryDTO;
+import edu.uoc.epcsd.showcatalog.dtos.CategoryDTO;
 import edu.uoc.epcsd.showcatalog.entities.Category;
 import edu.uoc.epcsd.showcatalog.repositories.CategoryRepository;
 import lombok.extern.log4j.Log4j2;
@@ -9,9 +9,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.ws.rs.BadRequestException;
-import javax.ws.rs.NotFoundException;
-import javax.ws.rs.core.Response;
 import java.util.List;
 
 @Log4j2
