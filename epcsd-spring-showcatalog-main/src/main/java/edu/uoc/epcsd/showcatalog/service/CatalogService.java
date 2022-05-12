@@ -36,7 +36,7 @@ public class CatalogService {
     }
 
     /**
-     * "No solo no se debe hacer cascade, es que en esta implementación
+     * Foro: "No solo no se debe hacer cascade, es que en esta implementación
      * no se debe permitir borrar una categoría que tenga actos asignados."
      */
     public ResponseEntity<Object> deleteCategory(long categoryId) {

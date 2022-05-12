@@ -47,8 +47,8 @@ public class Show {
     private String status;
 
     /**
-     * Como ya he dicho, se aceptará indistintamente cualquiera de las dos implementaciones (el modelo de la solución
-     * corresponde a tu interpretación, donde la relación es 1 a N).
+     * Foro: "Como ya he dicho, se aceptará indistintamente cualquiera de las dos implementaciones (el modelo de la solución
+     * corresponde a tu interpretación, donde la relación es 1 a N)."
      */
     @ManyToMany(cascade = CascadeType.MERGE)
     @JoinTable(

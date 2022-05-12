@@ -93,7 +93,6 @@ public class ShowController {
         return catalogService.createPerformance(showId, performance);
     }
 
-
     @PostMapping("/{showId}/edit")
     public ResponseEntity<Show> addShowCategory(@PathVariable long showId, @RequestParam long categoryId) {
         log.trace("addShowCategory");
