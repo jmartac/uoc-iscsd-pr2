@@ -89,7 +89,6 @@ public class ShowController {
         performance.setDate(requestBody.getDate());
         performance.setTime(requestBody.getTime());
         performance.setRemainingSeats(requestBody.getRemainingSeats());
-        performance.setStatus("CREATED");
 
         return catalogService.createPerformance(showId, performance);
     }

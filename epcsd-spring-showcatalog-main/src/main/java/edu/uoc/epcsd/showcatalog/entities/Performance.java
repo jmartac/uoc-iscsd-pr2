@@ -14,6 +14,11 @@ import java.time.LocalDate;
  *
  * However, I decided to exclude them due to its lack of use and to match the definition of
  * the Performance class given in the PR2 statement.
+ *
+ * Foro:
+ * "En referencia al caso de estudio: las Actuaciones no tendrán estado y por lo tanto no es necesario
+ * implementar ninguna operación para cancelar Actuaciones individuales."
+ *
  */
 
 @Entity
@@ -48,14 +53,6 @@ public class Performance {
     @EqualsAndHashCode.Exclude
     @Column(name = "remainingSeats")
     private int remainingSeats;
-
-    /**
-     * En referencia al caso de estudio: las Actuaciones no tendrán estado y por lo tanto no es necesario
-     * implementar ninguna operación para cancelar Actuaciones individuales.
-     */
-    @EqualsAndHashCode.Exclude
-    @Column(name = "status")
-    private String status;
 
     public String idToString() {
         return show.getId() + "-" + date.toString() + "-" + streamingURL;
