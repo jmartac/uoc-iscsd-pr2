@@ -9,8 +9,6 @@ import java.time.LocalDate;
 @Setter
 public class ShowDTO {
 
-    private Long id;
-
     private String name;
 
     private String description;
@@ -24,7 +22,5 @@ public class ShowDTO {
     private int capacity;
 
     private LocalDate onSaleDate;
-
-    private String status;
 
 }

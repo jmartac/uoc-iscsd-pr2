@@ -41,7 +41,7 @@ public class Show {
     private int capacity;
 
     @Column(name = "onSaleDate")
-    private LocalDate onSaleDate;
+    private LocalDate onSaleDate; // TODO: this field is always null both in the database and in the frontend
 
     @Column(name = "status")
     private String status;
@@ -50,7 +50,6 @@ public class Show {
      * Como ya he dicho, se aceptará indistintamente cualquiera de las dos implementaciones (el modelo de la solución
      * corresponde a tu interpretación, donde la relación es 1 a N).
      */
-    @JsonIgnore
     @ManyToMany(cascade = CascadeType.MERGE)
     @JoinTable(
             name = "show_categories",
@@ -74,8 +73,4 @@ public class Show {
         return i == -1 ? null : performances.get(i);
     }
 
-    /**
-     * En referencia a la implementación del comando POST /shows/{showId}/performances/{performanceId}/cancel:
-     * no se debe implementar esta operación
-     */
 }

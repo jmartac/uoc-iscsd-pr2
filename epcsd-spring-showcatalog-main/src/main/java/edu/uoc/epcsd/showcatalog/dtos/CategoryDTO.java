@@ -9,8 +9,6 @@ import javax.validation.constraints.NotBlank;
 @Setter
 public class CategoryDTO {
 
-    private Long id;
-
     @NotBlank
     private String name;
 

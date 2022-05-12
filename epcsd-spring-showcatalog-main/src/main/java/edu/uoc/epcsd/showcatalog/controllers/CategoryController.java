@@ -23,7 +23,7 @@ public class CategoryController {
     @Autowired
     private CategoryRepository categoryRepository;
 
-    @GetMapping("/")
+    @GetMapping()
     @ResponseStatus(HttpStatus.OK)
     public List<Category> getAllCategories() {
         log.trace("getAllCategories");
@@ -31,7 +31,7 @@ public class CategoryController {
         return categoryRepository.findAll();
     }
 
-    @PostMapping("/")
+    @PostMapping()
     public ResponseEntity<Long> createCategory(@RequestBody CategoryDTO requestBody) {
         log.trace("createCategory");
 

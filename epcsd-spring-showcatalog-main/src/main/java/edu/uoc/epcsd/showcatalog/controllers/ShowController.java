@@ -13,6 +13,7 @@ import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * As the PR1 solution suggest in the definition of the operation
@@ -35,7 +36,27 @@ public class ShowController {
     @Autowired
     private KafkaTemplate<String, Show> kafkaTemplate;
 
-    @PostMapping("/")
+    /**
+     * This operation only accepts one of two request parameters:
+     * @param name
+     * @param categoryId
+     * @return Bad Request if both parameters, or neither, are provided
+     */
+    @GetMapping()
+    public ResponseEntity<List<Show>> findShowsByNameOrCategory(@RequestParam(required = false) String name, @RequestParam(required = false) Optional<Long> categoryId) {
+        log.trace("findShowsByNameOrCategory");
+
+        if ((name != null && !name.isBlank() && categoryId.isPresent())
+                        || ((name == null || name.isBlank()) && categoryId.isEmpty())
+        ) return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+
+        if (categoryId.isPresent()) {
+            return new ResponseEntity<>(showRepository.findShowByCategoriesId(categoryId.get()), HttpStatus.OK);
+        }
+        return new ResponseEntity<>(showRepository.findByNameContaining(name), HttpStatus.OK);
+    }
+
+    @PostMapping()
     public ResponseEntity<Long> createShow(@RequestBody ShowDTO requestBody) {
         log.trace("createShow");
 
@@ -67,22 +88,6 @@ public class ShowController {
         }
 
         return new ResponseEntity<>(show, HttpStatus.OK);
-    }
-
-    @GetMapping("/")
-    @ResponseStatus(HttpStatus.OK)
-    public List<Show> findShowsByName(@RequestParam String name) {
-        log.trace("getShowByName");
-
-        return showRepository.findByNameContaining(name);
-    }
-
-    @GetMapping("/")
-    @ResponseStatus(HttpStatus.OK)
-    public List<Show> findShowsByCategory(@RequestParam long categoryId) {
-        log.trace("findShowsByCategory");
-
-        return showRepository.findShowByCategoriesId(categoryId);
     }
 
     @PostMapping("/{showId}/performances")
