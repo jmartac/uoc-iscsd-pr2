@@ -35,11 +35,10 @@ public class CatalogService {
         return new ResponseEntity<>(saved.getId(), HttpStatus.OK);
     }
 
-    /**
-     * Foro: "No solo no se debe hacer cascade, es que en esta implementación
-     * no se debe permitir borrar una categoría que tenga actos asignados."
-     */
     public ResponseEntity<Object> deleteCategory(long categoryId) {
+
+        // TODO: It MUST be possible to delete a category, even if it has shows
+
         Category category = categoryRepository.findById(categoryId).orElse(null);
         if (category == null) {
             log.warn("Category not found");
