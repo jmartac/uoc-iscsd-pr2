@@ -4,7 +4,7 @@ import edu.uoc.epcsd.showcatalog.dtos.PerformanceDTO;
 import edu.uoc.epcsd.showcatalog.dtos.ShowDTO;
 import edu.uoc.epcsd.showcatalog.entities.Performance;
 import edu.uoc.epcsd.showcatalog.entities.Show;
-import edu.uoc.epcsd.showcatalog.service.CatalogService;
+import edu.uoc.epcsd.showcatalog.services.CatalogService;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -27,6 +27,11 @@ import java.util.Optional;
  * I understand that Performances do not need to be cancelled/deleted:
  * Foro: "En referencia a la implementación del comando POST /shows/{showId}/performances/{performanceId}/cancel
  * no se debe implementar esta operación"
+ *
+ * I understand that shows can be deleted instead of cancelled:
+ * Foro: "en lo que respecta a los Actos, entiendo que pueda dar lugar a las dos interpretaciones:
+ * cambio de estado / borrado de la BBDD. En este caso se aceptaría cualquiera de las dos,
+ * mientras sea consistente con el resto del ejercicio"
  */
 
 @Log4j2

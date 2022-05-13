@@ -2,8 +2,7 @@ package edu.uoc.epcsd.showcatalog.controllers;
 
 import edu.uoc.epcsd.showcatalog.dtos.CategoryDTO;
 import edu.uoc.epcsd.showcatalog.entities.Category;
-import edu.uoc.epcsd.showcatalog.repositories.CategoryRepository;
-import edu.uoc.epcsd.showcatalog.service.CatalogService;
+import edu.uoc.epcsd.showcatalog.services.CatalogService;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

@@ -1,4 +1,4 @@
-package edu.uoc.epcsd.showcatalog.service;
+package edu.uoc.epcsd.showcatalog.services;
 
 import edu.uoc.epcsd.showcatalog.entities.Category;
 import edu.uoc.epcsd.showcatalog.entities.Performance;
