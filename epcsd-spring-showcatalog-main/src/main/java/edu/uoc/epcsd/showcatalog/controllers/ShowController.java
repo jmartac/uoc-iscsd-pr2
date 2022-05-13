@@ -8,6 +8,7 @@ import edu.uoc.epcsd.showcatalog.kafka.KafkaConstants;
 import edu.uoc.epcsd.showcatalog.services.CatalogService;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.kafka.core.KafkaTemplate;
@@ -85,7 +86,7 @@ public class ShowController {
     }
 
     @PostMapping("/{showId}/open")
-    public ResponseEntity<Show> openShow(@PathVariable long showId, @RequestParam(required = false) Optional<LocalDate> onSaleDate) {
+    public ResponseEntity<Show> openShow(@PathVariable long showId, @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") Optional<LocalDate> onSaleDate) {
         log.trace("openShow");
 
         return catalogService.openShow(showId, onSaleDate.orElse(LocalDate.now()));
