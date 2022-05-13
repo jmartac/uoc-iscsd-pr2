@@ -58,6 +58,7 @@ public class ShowController {
         show.setPrice(requestBody.getPrice());
         show.setCapacity(requestBody.getCapacity());
         show.setDuration(requestBody.getDuration());
+        show.setOnSaleDate(requestBody.getOnSaleDate());
         show.setStatus("CREATED");
 
         // TODO Notify Kafka?

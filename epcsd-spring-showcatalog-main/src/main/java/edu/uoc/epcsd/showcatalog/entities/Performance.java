@@ -39,7 +39,7 @@ public class Performance {
     private Show show;
 
     @Id
-    @Column(name = "date")
+    @Column(name = "date", columnDefinition = "DATE")
     private LocalDate date;
 
     @Id
