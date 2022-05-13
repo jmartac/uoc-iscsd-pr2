@@ -18,6 +18,7 @@ public class KafkaClassListener {
     void showAdded(Show show) {
         log.trace("showAdded");
 
+        log.info("Notifying users that a new show has been added");
         notificationService.notifyShowCreation(show);
     }
 }
