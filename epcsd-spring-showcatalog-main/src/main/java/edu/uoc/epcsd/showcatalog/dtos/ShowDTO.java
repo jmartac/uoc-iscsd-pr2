@@ -3,8 +3,6 @@ package edu.uoc.epcsd.showcatalog.dtos;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.time.LocalDate;
-
 @Getter
 @Setter
 public class ShowDTO {
@@ -20,7 +18,5 @@ public class ShowDTO {
     private double duration;
 
     private int capacity;
-
-    private LocalDate onSaleDate;
 
 }

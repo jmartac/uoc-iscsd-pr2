@@ -4,6 +4,7 @@ import edu.uoc.epcsd.showcatalog.dtos.PerformanceDTO;
 import edu.uoc.epcsd.showcatalog.dtos.ShowDTO;
 import edu.uoc.epcsd.showcatalog.entities.Performance;
 import edu.uoc.epcsd.showcatalog.entities.Show;
+import edu.uoc.epcsd.showcatalog.kafka.KafkaConstants;
 import edu.uoc.epcsd.showcatalog.services.CatalogService;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +13,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -53,7 +56,7 @@ public class ShowController {
     }
 
     @PostMapping()
-    public ResponseEntity<Long> createShow(@RequestBody ShowDTO requestBody) {
+    public ResponseEntity<Long> createShow(@RequestParam(required = false) Optional<List<Long>> categoriesIds, @RequestBody ShowDTO requestBody) {
         log.trace("createShow");
 
         Show show = new Show();
@@ -63,12 +66,15 @@ public class ShowController {
         show.setPrice(requestBody.getPrice());
         show.setCapacity(requestBody.getCapacity());
         show.setDuration(requestBody.getDuration());
-        show.setOnSaleDate(requestBody.getOnSaleDate());
         show.setStatus("CREATED");
 
-        // TODO Notify Kafka?
+        Show saved = catalogService.createShow(categoriesIds.orElse(new ArrayList<>()), show);
 
-        return catalogService.createShow(show);
+        // Notify users who have any of the given categories as favourite that a new show has been created
+        log.info("Sending message to Kafka topic {}", KafkaConstants.SHOW_TOPIC + KafkaConstants.SEPARATOR + KafkaConstants.COMMAND_ADD);
+        kafkaTemplate.send(KafkaConstants.SHOW_TOPIC + KafkaConstants.SEPARATOR + KafkaConstants.COMMAND_ADD, saved);
+
+        return new ResponseEntity<>(saved.getId(), HttpStatus.OK);
     }
 
     @GetMapping("/{showId}")
@@ -76,6 +82,13 @@ public class ShowController {
         log.trace("getShowDetails");
 
         return catalogService.getShowDetails(showId);
+    }
+
+    @PostMapping("/{showId}/open")
+    public ResponseEntity<Show> openShow(@PathVariable long showId, @RequestParam(required = false) Optional<LocalDate> onSaleDate) {
+        log.trace("openShow");
+
+        return catalogService.openShow(showId, onSaleDate.orElse(LocalDate.now()));
     }
 
     // I decided to delete shows, instead of cancel them (it was said in the forum that we could choose).
@@ -111,7 +124,7 @@ public class ShowController {
         return catalogService.createPerformance(showId, performance);
     }
 
-    @PostMapping("/{showId}/edit")
+    @PostMapping("/{showId}/addCategory")
     public ResponseEntity<Show> addShowCategory(@PathVariable long showId, @RequestParam long categoryId) {
         log.trace("addShowCategory");
 

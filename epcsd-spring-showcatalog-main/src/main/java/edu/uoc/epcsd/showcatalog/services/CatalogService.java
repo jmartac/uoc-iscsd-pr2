@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -68,13 +69,17 @@ public class CatalogService {
         return new ResponseEntity<>(showRepository.findByNameContaining(name), HttpStatus.OK);
     }
 
-    public ResponseEntity<Long> createShow(Show show) {
+    public Show createShow(List<Long> categoriesIds, Show show) {
+        // add categories to show
+        if (!categoriesIds.isEmpty()) {
+            categoryRepository.findAllById(categoriesIds).forEach(category -> show.getCategories().add(category));
+            log.info("Categories {} will be added to new show", categoriesIds);
+        }
+
         Show saved = showRepository.save(show);
         log.info("Show {} created", saved.getId());
 
-        // TODO Notify Kafka ?
-
-        return new ResponseEntity<>(saved.getId(), HttpStatus.OK);
+        return saved;
     }
 
     public ResponseEntity<Show> getShowDetails(long showId) {
@@ -85,6 +90,21 @@ public class CatalogService {
         }
 
         return new ResponseEntity<>(show, HttpStatus.OK);
+    }
+
+    public ResponseEntity<Show> openShow(long showId, LocalDate onSaleDate) {
+        log.trace("openShow");
+
+        Show show = showRepository.findById(showId).orElse(null);
+        if (show == null) {
+            log.warn("Show not found");
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        show.setStatus("OPENED");
+        show.setOnSaleDate(onSaleDate);
+
+        return new ResponseEntity<>(showRepository.save(show), HttpStatus.OK);
     }
 
     public ResponseEntity<Object> deleteShow(long showId) {
