@@ -37,7 +37,6 @@ public class CatalogService {
     }
 
     public ResponseEntity<Object> deleteCategory(long categoryId) {
-
         Category category = categoryRepository.findById(categoryId).orElse(null);
         if (category == null) {
             log.warn("Category not found");
@@ -93,8 +92,6 @@ public class CatalogService {
     }
 
     public ResponseEntity<Show> openShow(long showId, LocalDate onSaleDate) {
-        log.trace("openShow");
-
         Show show = showRepository.findById(showId).orElse(null);
         if (show == null) {
             log.warn("Show not found");
