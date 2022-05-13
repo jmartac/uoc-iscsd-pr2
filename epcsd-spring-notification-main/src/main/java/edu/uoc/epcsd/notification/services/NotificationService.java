@@ -33,7 +33,7 @@ public class NotificationService {
     }
 
 
-        // mock notification
+    // mock notification
     private void notifyUser(User user, Show show) {
         // send email / push notification / etc.
         log.info("Show \"" + show.getName() + "\" added!. Notifying the user \"" + user.getFullName() + "\"");

@@ -30,14 +30,13 @@ public class NotificationController {
     public ResponseEntity<Object> notify(@RequestParam Long showId) {
         log.trace("notify");
 
-        // Get show from CatalogService
         Show show;
         try {
+            // Get show from CatalogService
             show = restTemplate.getForObject(CatalogServiceUrl + "shows/" + showId, Show.class);
         } catch (HttpStatusCodeException e) {
             String logMsg = "Show could not be retrieved, CatalogService response: " + e.getStatusCode();
             logMsg = e.getStatusCode() == HttpStatus.NOT_FOUND ? "Requested Show was not found" : logMsg;
-
             log.warn(logMsg);
             return new ResponseEntity<>(e.getStatusCode());
         }
