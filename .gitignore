@@ -8,6 +8,5 @@
 /dataSources.local.xml
 
 .idea/
-README.md
-README_es.md
+.DS_Store
 target/
